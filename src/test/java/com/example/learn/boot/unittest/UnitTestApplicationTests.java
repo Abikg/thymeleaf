@@ -1,13 +1,50 @@
 package com.example.learn.boot.unittest;
 
+
+
+import com.example.learn.boot.unittest.model.EmployeeDTO;
+import com.example.learn.boot.unittest.service.EmployeeService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class UnitTestApplicationTests {
+@ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+public class UnitTestApplicationTests {
 
-	@Test
-	void contextLoads() {
+	@Autowired
+	protected MockMvc mockMvc;
+
+	@Autowired
+	protected EmployeeService employeeService;
+
+	protected ObjectMapper objectMapper;
+
+	protected void createEmployee(){
+		EmployeeDTO dto = new EmployeeDTO();
+		dto.setName("Employee");
+		dto.setAddress("Kathmandu");
+		dto.setEmail("user@user.com");
+		dto.setPhone("9876554433");
+		employeeService.save(dto);
+	}
+
+	@BeforeEach
+	public void setUp() {
+		objectMapper = new ObjectMapper();
 	}
 
 }
