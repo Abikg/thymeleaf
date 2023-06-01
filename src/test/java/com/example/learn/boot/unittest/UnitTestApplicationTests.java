@@ -33,12 +33,12 @@ public class UnitTestApplicationTests {
 
 	protected ObjectMapper objectMapper;
 
-	protected void createEmployee(){
+	protected void createEmployee(String name, String address,String email,String phone ){
 		EmployeeDTO dto = new EmployeeDTO();
-		dto.setName("Employee");
-		dto.setAddress("Kathmandu");
-		dto.setEmail("user@user.com");
-		dto.setPhone("9876554433");
+		dto.setName(name);
+		dto.setAddress(address);
+		dto.setEmail(email);
+		dto.setPhone(phone);
 		employeeService.save(dto);
 	}
 
