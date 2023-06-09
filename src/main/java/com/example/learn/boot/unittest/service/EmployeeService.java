@@ -1,17 +1,18 @@
 package com.example.learn.boot.unittest.service;
 
 import com.example.learn.boot.unittest.model.EmployeeDTO;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface EmployeeService {
-    List<EmployeeDTO> listAll();
+    ResponseEntity listAll();
 
-    EmployeeDTO save(EmployeeDTO dto);
-    EmployeeDTO getById(long id);
-    EmployeeDTO updateEmployee(Long id, EmployeeDTO updatedEmployee);
+    ResponseEntity save(EmployeeDTO dto);
+    ResponseEntity getById(long id);
+    ResponseEntity updateEmployee(Long id, EmployeeDTO updatedEmployee);
 
-    void deleteEmployeeById(long id);
+    ResponseEntity deleteEmployeeById(long id);
 
 
 }

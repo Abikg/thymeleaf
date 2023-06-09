@@ -6,6 +6,8 @@ import com.example.learn.boot.unittest.model.EmployeeDTO;
 import com.example.learn.boot.unittest.repository.EmployeeRepository;
 import com.example.learn.boot.unittest.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,45 +19,66 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public List<EmployeeDTO> listAll() {
+    public ResponseEntity listAll() {
 
             List<EmployeeDTO> employeeDTOList = employeeConverter.convertToDtoList(employeeRepository.findAll());
-            return employeeDTOList;
-
+            if (employeeDTOList.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }else {
+                return ResponseEntity.status(HttpStatus.OK).body(employeeDTOList);
+            }
 
     }
 
     @Override
-    public EmployeeDTO save(EmployeeDTO dto) {
-        try{
-            EmployeeDTO savedDto =  employeeConverter.convertToDto(
-                    employeeRepository.saveAndFlush(employeeConverter.convertToEntity(dto)));
-            return savedDto;
-        }catch (Exception e){
-            return null;
-        }
+    public ResponseEntity save(EmployeeDTO dto) {
+           if(dto.getEmail()==null){
+
+
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }else {
+               EmployeeDTO savedDto =  employeeConverter.convertToDto(
+                       employeeRepository.saveAndFlush(employeeConverter.convertToEntity(dto)));
+                return ResponseEntity.status(HttpStatus.CREATED).body(savedDto);
+            }
     }
 
     @Override
-    public EmployeeDTO getById(long id) {
+    public ResponseEntity getById(long id) {
         EmployeeDTO employeeDTO = employeeConverter.convertToDto(employeeRepository.findById(id).orElse(null));
         if (employeeDTO==null){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }else{
+            return ResponseEntity.status(HttpStatus.OK).body(employeeDTO);
         }
-
-        return employeeDTO;
     }
 
     @Override
-    public EmployeeDTO updateEmployee(Long id, EmployeeDTO updatedEmployee) {
+    public ResponseEntity updateEmployee(Long id, EmployeeDTO updatedEmployee) {
         PersistentEmployeeEntity existingEntity = employeeRepository.findById(id).orElse(null);
-        employeeRepository.save(employeeConverter.copyConvertToEntity(updatedEmployee, existingEntity));
-        return updatedEmployee;
+        if (existingEntity==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }else {
+           EmployeeDTO dto= employeeConverter.convertToDto(employeeRepository.save(employeeConverter.copyConvertToEntity(updatedEmployee, existingEntity)));
+           if(dto.getEmail()==null){
+               return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+           }else {
+               return ResponseEntity.status(HttpStatus.OK).body(dto);
+           }
+
+        }
     }
 
     @Override
-    public void deleteEmployeeById(long id) {
-        employeeRepository.deleteById(id);
+    public ResponseEntity deleteEmployeeById(long id) {
+        EmployeeDTO dto = employeeConverter.convertToDto(employeeRepository.findById(id).orElse(null));
+        if(dto==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }else{
+            employeeRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
     }
 }
 
