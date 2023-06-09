@@ -45,8 +45,9 @@ public class EmployeeTest extends UnitTestApplicationTests {
                 .andExpect(jsonPath("$.phone").value("9876554433"));
     }
     @Test
-    public void createEmployeeTest_null() throws Exception {
+    public void createEmployeeTest_Badreq() throws Exception {
         EmployeeDTO dto = new EmployeeDTO();
+        dto.setEmail(null);
 
 
         mockMvc.perform(MockMvcRequestBuilders.post("/employee/save")
@@ -59,10 +60,16 @@ public class EmployeeTest extends UnitTestApplicationTests {
 
     @Test
     public void getEmployeeById() throws Exception {
-        createEmployee("Abik", "BKT", "abk@gmail.com", "984382");
+        EmployeeDTO dto = new EmployeeDTO();
+        dto.setId(1L);
+        dto.setName("Abik");
+        dto.setAddress("Kathmandu");
+        dto.setEmail("user@user.com");
+        dto.setPhone("9876554433");
+        employeeService.save(dto);
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/employee/get/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/employee/get/"+dto.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Abik"));
@@ -70,6 +77,7 @@ public class EmployeeTest extends UnitTestApplicationTests {
     }
     @Test
     public void getEmployeeById_notfound() throws Exception {
+
 
 
 
@@ -84,14 +92,22 @@ public class EmployeeTest extends UnitTestApplicationTests {
 
     @Test
     public void deleteEmployeeById() throws Exception {
-        createEmployee("Abik", "BKT", "abk@gmail.com", "984382");
+        EmployeeDTO dto = new EmployeeDTO();
+        dto.setId(1L);
+        dto.setName("Abik");
+        dto.setAddress("Kathmandu");
+        dto.setEmail("user@user.com");
+        dto.setPhone("9876554433");
+        employeeService.save(dto);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/employee/1")
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/employee/"+dto.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
     @Test
     public void deleteEmployeeById_notfound() throws Exception {
+        EmployeeDTO dto = new EmployeeDTO();
 
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/employee/2")
@@ -103,7 +119,7 @@ public class EmployeeTest extends UnitTestApplicationTests {
 
     @Test
     public void listAllEmployees() throws Exception {
-        createEmployee("Abik", "BKT", "abk@gmail.com", "984382");
+        createEmployee("Abik", "BKT", "abk@gmail.com", "9843821");
 
         mockMvc.perform(MockMvcRequestBuilders.get("/employee/list")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -126,17 +142,23 @@ public class EmployeeTest extends UnitTestApplicationTests {
     @Test
     public void updateEmployeeTest() throws Exception {
         // Create an employee
-        createEmployee("Abik", "BKT", "abk@gmail.com", "984382");
+        EmployeeDTO dto = new EmployeeDTO();
+        dto.setId(1L);
+        dto.setName("Abik");
+        dto.setAddress("Kathmandu");
+        dto.setEmail("user@user.com");
+        dto.setPhone("9876554433");
+        employeeService.save(dto);
 
         // Update the employee
         String updatedEmployeeJson = "{ \"name\": \"aani\", \"address\": \"nepl\", \"email\": \"aak@gmail.com\", \"phone\": \"676841888\" }";
-        mockMvc.perform(MockMvcRequestBuilders.put("/employee/update/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/employee/update/"+dto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updatedEmployeeJson))
                 .andExpect(status().isOk());
 
         // Verify that the employee was updated
-        mockMvc.perform(MockMvcRequestBuilders.get("/employee/get/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/employee/get/"+dto.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("aani"))
@@ -147,11 +169,17 @@ public class EmployeeTest extends UnitTestApplicationTests {
     @Test
     public void updateEmployeeTest_badreq() throws Exception {
         // Create an employee
-        createEmployee("Abik", "BKT", "abk@gmail.com", "984382");
+        EmployeeDTO dto = new EmployeeDTO();
+        dto.setId(1L);
+        dto.setName("Abik");
+        dto.setAddress("Kathmandu");
+        dto.setEmail("user@user.com");
+        dto.setPhone("9876554433");
+        employeeService.save(dto);
 
         // Update the employee
         String updatedEmployeeJson = "{ \"name\":\"\", \"address\": \"nepl\", \"email\":null\"\", \"phone\": \"676841888\" }";
-        mockMvc.perform(MockMvcRequestBuilders.put("/employee/update/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/employee/update/"+dto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updatedEmployeeJson))
                 .andExpect(status().isBadRequest());
@@ -166,8 +194,7 @@ public class EmployeeTest extends UnitTestApplicationTests {
 //                .andExpect(jsonPath("$.phone").value("676841888"));
     }  @Test
     public void updateEmployeeTestnotfound() throws Exception {
-        // Create an employee
-//        createEmployee("Abik", "BKT", "abk@gmail.com", "984382");
+        EmployeeDTO dto=new EmployeeDTO();
 
         // Update the employee
         String updatedEmployeeJson = "{ \"name\":\"\", \"address\": \"nepl\", \"email\":\"k@gmail.c\", \"phone\": \"676841888\" }";

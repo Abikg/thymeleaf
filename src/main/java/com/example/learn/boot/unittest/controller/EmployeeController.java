@@ -8,68 +8,46 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/employee")
 public class EmployeeController {
     private final EmployeeService employeeService;
 
-    @GetMapping({"/", "/list"})
+    @GetMapping( "/list")
     @ResponseBody
     public ResponseEntity employeeList() {
-
-        if(employeeService.listAll()==null){
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }else {
-            return ResponseEntity.status(HttpStatus.OK).body(employeeService.listAll());
-        }
+        ResponseEntity response=employeeService.listAll();
+        return response;
     }
 
     @PostMapping("/save")
     @ResponseBody
     public ResponseEntity create(@RequestBody EmployeeDTO dto) {
-        EmployeeDTO savedDTO = employeeService.save(dto);
-        if(dto.getEmail() == null ){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-        return  ResponseEntity.status(HttpStatus.CREATED).body(savedDTO);
+        ResponseEntity response = employeeService.save(dto);
+        return response;
     }
 
     @GetMapping( "get/{id}")
     @ResponseBody
     public ResponseEntity get(@PathVariable Long id){
-        EmployeeDTO employeeDTO = employeeService.getById(id);
-        if(employeeDTO != null){
-            return ResponseEntity.status(HttpStatus.OK).body(employeeDTO);
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-
-
+        ResponseEntity response = employeeService.getById(id);
+        return response;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
-        EmployeeDTO employeeDTO= employeeService.getById(id);
-        if(employeeDTO==null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }else {
-            employeeService.deleteEmployeeById(id);
-            return ResponseEntity.status(HttpStatus.OK).body(null);
-        }
+         ResponseEntity response= employeeService.deleteEmployeeById(id);
+        return response;
     }
 
 
     @PutMapping("/update/{id}")
     public ResponseEntity<EmployeeDTO> update(@PathVariable long id, @RequestBody EmployeeDTO employeeDTO) {
-        EmployeeDTO toupdateemployee = employeeService.getById(id);
-        if (toupdateemployee==null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }else {
-            EmployeeDTO updatedEmployeeDTO = employeeService.updateEmployee(id, employeeDTO);
-            if (updatedEmployeeDTO.getEmail() == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(updatedEmployeeDTO);
-        }
+
+            ResponseEntity response = employeeService.updateEmployee(id, employeeDTO);
+            return response;
     }
 }
