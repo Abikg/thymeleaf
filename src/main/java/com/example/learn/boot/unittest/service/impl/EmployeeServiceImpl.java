@@ -18,11 +18,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<EmployeeDTO> listAll() {
-        try {
-            return employeeConverter.convertToDtoList(employeeRepository.findAll());
-        }catch (Exception e){
-            return null;
-        }
+
+            List<EmployeeDTO> employeeDTOList = employeeConverter.convertToDtoList(employeeRepository.findAll());
+            return employeeDTOList;
+
 
     }
 

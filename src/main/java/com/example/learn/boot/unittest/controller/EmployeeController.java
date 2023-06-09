@@ -8,20 +8,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/employee")
 public class EmployeeController {
     private final EmployeeService employeeService;
 
-    @GetMapping({"/", "/list"})
+    @GetMapping( "/list")
     @ResponseBody
     public ResponseEntity employeeList() {
+        List<EmployeeDTO> employeeDTOList=employeeService.listAll();
 
-        if(employeeService.listAll()==null){
+        if(employeeDTOList.isEmpty()){
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }else {
-            return ResponseEntity.status(HttpStatus.OK).body(employeeService.listAll());
+            return ResponseEntity.status(HttpStatus.OK).body(employeeDTOList);
         }
     }
 
