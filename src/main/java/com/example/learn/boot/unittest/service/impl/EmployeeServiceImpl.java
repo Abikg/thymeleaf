@@ -1,6 +1,7 @@
 package com.example.learn.boot.unittest.service.impl;
 
 import com.example.learn.boot.unittest.converter.EmployeeConverter;
+import com.example.learn.boot.unittest.domain.PersistentEmployeeEntity;
 import com.example.learn.boot.unittest.model.EmployeeDTO;
 import com.example.learn.boot.unittest.repository.EmployeeRepository;
 import com.example.learn.boot.unittest.service.EmployeeService;
@@ -17,7 +18,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<EmployeeDTO> listAll() {
-        return employeeConverter.convertToDtoList(employeeRepository.findAll());
+        try {
+            return employeeConverter.convertToDtoList(employeeRepository.findAll());
+        }catch (Exception e){
+            return null;
+        }
+
     }
 
     @Override
@@ -30,4 +36,27 @@ public class EmployeeServiceImpl implements EmployeeService {
             return null;
         }
     }
+
+    @Override
+    public EmployeeDTO getById(long id) {
+        EmployeeDTO employeeDTO = employeeConverter.convertToDto(employeeRepository.findById(id).orElse(null));
+        if (employeeDTO==null){
+            return null;
+        }
+
+        return employeeDTO;
+    }
+
+    @Override
+    public EmployeeDTO updateEmployee(Long id, EmployeeDTO updatedEmployee) {
+        PersistentEmployeeEntity existingEntity = employeeRepository.findById(id).orElse(null);
+        employeeRepository.save(employeeConverter.copyConvertToEntity(updatedEmployee, existingEntity));
+        return updatedEmployee;
+    }
+
+    @Override
+    public void deleteEmployeeById(long id) {
+        employeeRepository.deleteById(id);
+    }
 }
+

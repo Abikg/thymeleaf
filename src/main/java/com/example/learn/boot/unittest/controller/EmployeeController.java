@@ -17,16 +17,59 @@ public class EmployeeController {
     @GetMapping({"/", "/list"})
     @ResponseBody
     public ResponseEntity employeeList() {
-        return ResponseEntity.status(HttpStatus.OK).body(employeeService.listAll());
+
+        if(employeeService.listAll()==null){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }else {
+            return ResponseEntity.status(HttpStatus.OK).body(employeeService.listAll());
+        }
     }
 
     @PostMapping("/save")
     @ResponseBody
     public ResponseEntity create(@RequestBody EmployeeDTO dto) {
         EmployeeDTO savedDTO = employeeService.save(dto);
-        if(dto ==null ){
+        if(dto.getEmail() == null ){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         return  ResponseEntity.status(HttpStatus.CREATED).body(savedDTO);
+    }
+
+    @GetMapping( "get/{id}")
+    @ResponseBody
+    public ResponseEntity get(@PathVariable Long id){
+        EmployeeDTO employeeDTO = employeeService.getById(id);
+        if(employeeDTO != null){
+            return ResponseEntity.status(HttpStatus.OK).body(employeeDTO);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        EmployeeDTO employeeDTO= employeeService.getById(id);
+        if(employeeDTO==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }else {
+            employeeService.deleteEmployeeById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+    }
+
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<EmployeeDTO> update(@PathVariable long id, @RequestBody EmployeeDTO employeeDTO) {
+        EmployeeDTO toupdateemployee = employeeService.getById(id);
+        if (toupdateemployee==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }else {
+            EmployeeDTO updatedEmployeeDTO = employeeService.updateEmployee(id, employeeDTO);
+            if (updatedEmployeeDTO.getEmail() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(updatedEmployeeDTO);
+        }
     }
 }

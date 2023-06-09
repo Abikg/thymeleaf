@@ -2,7 +2,9 @@ package com.example.learn.boot.unittest;
 
 
 
+import com.example.learn.boot.unittest.controller.EmployeeController;
 import com.example.learn.boot.unittest.model.EmployeeDTO;
+import com.example.learn.boot.unittest.repository.EmployeeRepository;
 import com.example.learn.boot.unittest.service.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +32,12 @@ public class UnitTestApplicationTests {
 
 	@Autowired
 	protected EmployeeService employeeService;
+
+	@Autowired
+	protected EmployeeRepository employeeRepository;
+
+	@Autowired
+	protected EmployeeController employeeController;
 
 	protected ObjectMapper objectMapper;
 
