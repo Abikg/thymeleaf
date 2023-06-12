@@ -32,11 +32,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponseEntity save(EmployeeDTO dto) {
-           if(dto.getEmail()==null){
-
-
-
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+           if(dto.getEmail()==null||dto.getName()==null){
+               return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
             }else {
                EmployeeDTO savedDto =  employeeConverter.convertToDto(
                        employeeRepository.saveAndFlush(employeeConverter.convertToEntity(dto)));
@@ -60,12 +57,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (existingEntity==null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }else {
-           EmployeeDTO dto= employeeConverter.convertToDto(employeeRepository.save(employeeConverter.copyConvertToEntity(updatedEmployee, existingEntity)));
-           if(dto.getEmail()==null){
-               return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-           }else {
-               return ResponseEntity.status(HttpStatus.OK).body(dto);
-           }
+            if (updatedEmployee.getEmail()==null||updatedEmployee.getName()==null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }else {
+                EmployeeDTO dto= employeeConverter.convertToDto(employeeRepository.save(employeeConverter.copyConvertToEntity(updatedEmployee, existingEntity)));
+                return ResponseEntity.status(HttpStatus.OK).body(dto);
+            }
 
         }
     }
