@@ -6,13 +6,13 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface EmployeeService {
-    ResponseEntity listAll();
+    List<EmployeeDTO> listAll();
 
-    ResponseEntity save(EmployeeDTO dto);
-    ResponseEntity getById(long id);
-    ResponseEntity updateEmployee(Long id, EmployeeDTO updatedEmployee);
+    EmployeeDTO save(EmployeeDTO dto);
+    EmployeeDTO getById(long id);
+    EmployeeDTO updateEmployee(Long id, EmployeeDTO updatedEmployee);
 
-    ResponseEntity deleteEmployeeById(long id);
+    void deleteEmployeeById(long id);
 
 
 }

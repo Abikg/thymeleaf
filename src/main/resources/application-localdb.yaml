@@ -5,6 +5,6 @@ spring:
     username: postgres
     password: root
     hikari:
-      schema: utest
+      schema: unit
   jpa:
     show_sql: true
